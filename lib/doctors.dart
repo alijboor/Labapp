@@ -1,54 +1,25 @@
-// ignore_for_file: prefer_const_constructors, non_constant_identifier_names
+// ignore_for_file: prefer_const_constructors, library_private_types_in_public_api
 
-// import 'dart:html';
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lapapp/data/report.dart';
-import 'package:path_provider/path_provider.dart';
 
-class ResultOfAnalysis extends StatefulWidget {
-  const ResultOfAnalysis({Key? key}) : super(key: key);
+class Doctors extends StatefulWidget {
+  const Doctors({Key? key}) : super(key: key);
 
   @override
-  State<ResultOfAnalysis> createState() => _ResultOfAnalysisState();
+  _DoctorsState createState() => _DoctorsState();
 }
 
-class _ResultOfAnalysisState extends State<ResultOfAnalysis> {
+class _DoctorsState extends State<Doctors> {
   int currentPage = 0;
 
-  late TextEditingController nationNumber;
   @override
   void initState() {
     super.initState();
-    nationNumber = TextEditingController();
-    // PopUps();
-    // WidgetsBinding.instance?.addPostFrameCallback((_) {
-    //   showDialog(
-    //       context: context,
-    //       builder: (context) => AlertDialog(
-    //             title: Text("ادخل رقم الهوية"),
-    //             content: TextField(
-    //               autofocus: true,
-    //               decoration: InputDecoration(hintText: "ادخل رقم الهوية"),
-    //             ),
-    //             actions: [
-    //               TextButton(onPressed: () {}, child: Text('بحث عن نتائج'))
-    //             ],
-    //           ));
-    // });
   }
 
-  List<Report> reports = [
-    Report(0, "فحص دم", "نتيجة فحص الدم جيدة", "علي جبور", 405499484),
-    Report(1, "فحص بول", "نتيجة فحص البول جيدة", "علي جبور", 405499484)
-  ];
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration.zero, () => PopUps(context));
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -62,23 +33,23 @@ class _ResultOfAnalysisState extends State<ResultOfAnalysis> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // SizedBox(
-                    //   width: 24,
-                    //   height: 24,
-                    //   child: IconButton(
-                    //     visualDensity: VisualDensity.adaptivePlatformDensity,
-                    //     padding: EdgeInsets.zero,
-                    //     onPressed: () {
-                    //       Navigator.pop(context);
-                    //     },
-                    //     icon: const Icon(
-                    //       Icons.chevron_left,
-                    //       color: Colors.black,
-                    //     ),
-                    //   ),
-                    // ),
+                    SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: IconButton(
+                        visualDensity: VisualDensity.adaptivePlatformDensity,
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(
+                          Icons.chevron_left,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
                     Text(
-                      "نتائج التحاليل الخاصة بك",
+                      "Therapist",
                       style: GoogleFonts.workSans(
                         textStyle: TextStyle(
                           fontSize: 16,
@@ -95,11 +66,9 @@ class _ResultOfAnalysisState extends State<ResultOfAnalysis> {
                         child: IconButton(
                           visualDensity: VisualDensity.adaptivePlatformDensity,
                           padding: EdgeInsets.zero,
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
+                          onPressed: () {},
                           icon: const Icon(
-                            Icons.chevron_right,
+                            Icons.filter_list,
                             color: Colors.black,
                           ),
                         ),
@@ -158,7 +127,7 @@ class _ResultOfAnalysisState extends State<ResultOfAnalysis> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "تحليلاتك",
+                      "Nearby Therapists",
                       style: GoogleFonts.workSans(
                         textStyle: TextStyle(
                           fontSize: 16,
@@ -168,32 +137,34 @@ class _ResultOfAnalysisState extends State<ResultOfAnalysis> {
                         ),
                       ),
                     ),
-                    // TextButton(
-                    //   onPressed: () {},
-                    //   child: Text(
-                    //     "See more",
-                    //     style: GoogleFonts.workSans(
-                    //       textStyle: TextStyle(
-                    //         fontSize: 14,
-                    //         color: Colors.black,
-                    //         fontStyle: FontStyle.normal,
-                    //         fontWeight: FontWeight.w600,
-                    //       ),
-                    //     ),
-                    //   ),
-                    // )
+                    TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        "See more",
+                        style: GoogleFonts.workSans(
+                          textStyle: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    )
                   ],
                 ),
                 SizedBox(height: 30),
                 ListView.separated(
                   shrinkWrap: true,
-                  itemCount: reports.length,
+                  itemCount: 7,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (c, i) {
                     return SizedBox(
                       height: 125,
+                      // padding: EdgeInsets.only(left: 11 ),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
+                        // crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Center(
                             child: ClipRRect(
@@ -202,9 +173,7 @@ class _ResultOfAnalysisState extends State<ResultOfAnalysis> {
                                 width: 125,
                                 height: 125,
                                 // margin: EdgeInsets.only(right: 14 ),
-                                color: Color.fromARGB(255, 160, 58, 58),
-                                child: PDF().cachedFromUrl(
-                                    "https://www.bu.edu/tech/files/2017/02/Introduction-to-C-Part-1.pdf"),
+                                color: const Color(0xffD0D0D0),
                               ),
                             ),
                           ),
@@ -229,7 +198,7 @@ class _ResultOfAnalysisState extends State<ResultOfAnalysis> {
                                       children: [
                                         Flexible(
                                           child: Text(
-                                            reports[i].name,
+                                            "Dr. John Doe",
                                             style: GoogleFonts.workSans(
                                               textStyle: TextStyle(
                                                 fontSize: 16,
@@ -246,7 +215,7 @@ class _ResultOfAnalysisState extends State<ResultOfAnalysis> {
                                           height: 8,
                                         ),
                                         Text(
-                                          reports[i].name_of_patient,
+                                          "CUHK Medical Centre",
                                           style: GoogleFonts.workSans(
                                             textStyle: TextStyle(
                                               fontSize: 14,
@@ -268,7 +237,7 @@ class _ResultOfAnalysisState extends State<ResultOfAnalysis> {
                                               color: Colors.black,
                                             ),
                                             Text(
-                                              reports[i].descr,
+                                              "4.8",
                                               style: GoogleFonts.workSans(
                                                 textStyle: TextStyle(
                                                   fontSize: 14,
@@ -283,21 +252,21 @@ class _ResultOfAnalysisState extends State<ResultOfAnalysis> {
                                             SizedBox(
                                               width: 16,
                                             ),
-                                            // Flexible(
-                                            //   child: Text(
-                                            //     reports[i].descr,
-                                            //     style: GoogleFonts.workSans(
-                                            //       textStyle: TextStyle(
-                                            //         fontSize: 14,
-                                            //         color: Colors.black,
-                                            //         fontStyle: FontStyle.normal,
-                                            //         fontWeight: FontWeight.w600,
-                                            //       ),
-                                            //     ),
-                                            //     maxLines: 1,
-                                            //     overflow: TextOverflow.ellipsis,
-                                            //   ),
-                                            // ),
+                                            Flexible(
+                                              child: Text(
+                                                "(156 reviews)",
+                                                style: GoogleFonts.workSans(
+                                                  textStyle: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.black,
+                                                    fontStyle: FontStyle.normal,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
                                           ],
                                         )
                                       ],
@@ -324,52 +293,11 @@ class _ResultOfAnalysisState extends State<ResultOfAnalysis> {
     );
   }
 
-  Future<String?> PopUps(BuildContext context) => showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-            title: Text("ادخل رقم الهوية"),
-            content: TextField(
-              autofocus: true,
-              decoration: InputDecoration(hintText: "ادخل رقم الهوية"),
-              controller: nationNumber,
-            ),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(nationNumber.text);
-                    // print(nationNumber.text);
-                  },
-                  child: Text('بحث عن نتائج'))
-            ],
-          ));
-
-  Future openFile({required String url, String? fileName}) async {
-    await downloadFile(url, fileName!);
-  }
-
-  Future<File?> downloadFile(String url, String name) async {
-    final appStorage = await getApplicationDocumentsDirectory();
-    final file = File('${appStorage.path}/$name');
-
-    final response = await Dio().get(
-      url,
-      options: Options(
-        responseType: ResponseType.bytes,
-        followRedirects: false,
-        receiveTimeout: 0,
-      ),
-    );
-    final raf = file.openSync(mode: FileMode.write);
-    raf.writeFromSync(response.data);
-    await raf.close();
-    return file;
-  }
-
   var kAnimationDuration = const Duration(milliseconds: 200);
-
   var kPrimaryColor = Colors.black;
 
   // String? swipeDirection;
+
   AnimatedContainer buildDot(bool isCurrent) {
     return AnimatedContainer(
       duration: kAnimationDuration,

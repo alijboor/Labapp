@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "190742184873",
+    "project_id": "lab-project-79ea3",
+    "storage_bucket": "lab-project-79ea3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:190742184873:android:72fb13f046044791413ab8",
+        "android_client_info": {
+          "package_name": "com.example.lapapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "190742184873-o91ekfjlkt25ufpq2klnvvnobatlsd7f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAu0OPtryaHSyRIn006RlBDqriyeW5RDLU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "190742184873-o91ekfjlkt25ufpq2klnvvnobatlsd7f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
