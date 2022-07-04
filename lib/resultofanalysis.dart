@@ -1,14 +1,17 @@
-// ignore_for_file: prefer_const_constructors, non_constant_identifier_names
+// ignore_for_file: prefer_const_constructors, non_constant_identifier_names, deprecated_member_use, prefer_collection_literals, prefer_typing_uninitialized_variables, avoid_print
 
 // import 'dart:html';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:google_fonts/google_fonts.dart';
+// import 'package:lapapp/data/examination.dart';
 import 'package:lapapp/data/report.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 
 class ResultOfAnalysis extends StatefulWidget {
   const ResultOfAnalysis({Key? key}) : super(key: key);
@@ -18,28 +21,15 @@ class ResultOfAnalysis extends StatefulWidget {
 }
 
 class _ResultOfAnalysisState extends State<ResultOfAnalysis> {
+  late List<String> DataList;
   int currentPage = 0;
 
-  late TextEditingController nationNumber;
+  TextEditingController nationNumber = TextEditingController();
+
+  var datas;
   @override
   void initState() {
     super.initState();
-    nationNumber = TextEditingController();
-    // PopUps();
-    // WidgetsBinding.instance?.addPostFrameCallback((_) {
-    //   showDialog(
-    //       context: context,
-    //       builder: (context) => AlertDialog(
-    //             title: Text("ادخل رقم الهوية"),
-    //             content: TextField(
-    //               autofocus: true,
-    //               decoration: InputDecoration(hintText: "ادخل رقم الهوية"),
-    //             ),
-    //             actions: [
-    //               TextButton(onPressed: () {}, child: Text('بحث عن نتائج'))
-    //             ],
-    //           ));
-    // });
   }
 
   List<Report> reports = [
@@ -48,7 +38,7 @@ class _ResultOfAnalysisState extends State<ResultOfAnalysis> {
   ];
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration.zero, () => PopUps(context));
+    // Future.delayed(Duration.zero, () => PopUps(context));
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -108,49 +98,54 @@ class _ResultOfAnalysisState extends State<ResultOfAnalysis> {
                   ],
                 ),
                 SizedBox(height: 37),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: SizedBox(
-                    width: 343,
-                    height: 170,
-                    child: Stack(
-                      children: [
-                        PageView.builder(
-                          itemCount: 4,
-                          physics: const BouncingScrollPhysics(
-                              parent: AlwaysScrollableScrollPhysics()),
-                          onPageChanged: (index) {
-                            setState(() {
-                              currentPage = index;
-                            });
-                          },
-                          itemBuilder: (c, i) {
-                            return Container(
-                              width: 343,
-                              height: 170,
-                              color: const Color(0xffA8A8A8),
-                            );
-                          },
+                Container(
+                  margin: EdgeInsets.all(3),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 4,
+                        child: Container(
+                          height: 60,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: Color.fromARGB(255, 209, 209, 209),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          child: TextField(
+                            textDirection: TextDirection.rtl,
+                            // autofocus: true,
+                            controller: nationNumber,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "ادخل رقم الهوية",
+                                hintStyle: TextStyle(fontSize: 20),
+                                // contentPadding: EdgeInsets.only(
+                                //     left: 0, right: 0, bottom: 0, top: 0),
+                                prefixIcon:
+                                    Icon(Icons.search, color: Colors.black54)),
+                          ),
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: List.generate(
-                                  4,
-                                  (index) => buildDot(index == currentPage),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 11,
-                            )
-                          ],
-                        )
-                      ],
-                    ),
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: MaterialButton(
+                            height: 60,
+                            onPressed: () {
+                              if (nationNumber.text == '') {
+                                PopUps(context);
+                              } else {
+                                dataFetch(nationNumber.text);
+                                // print(nationNumber.text);
+                              }
+                            },
+                            child: Text(
+                              'بحث',
+                              textDirection: TextDirection.rtl,
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            )),
+                      )
+                    ],
                   ),
                 ),
                 SizedBox(height: 30),
@@ -185,135 +180,162 @@ class _ResultOfAnalysisState extends State<ResultOfAnalysis> {
                   ],
                 ),
                 SizedBox(height: 30),
-                ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: reports.length,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (c, i) {
-                    return SizedBox(
-                      height: 125,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Center(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Container(
-                                width: 125,
-                                height: 125,
-                                // margin: EdgeInsets.only(right: 14 ),
-                                color: Color.fromARGB(255, 160, 58, 58),
-                                child: PDF().cachedFromUrl(
-                                    "https://www.bu.edu/tech/files/2017/02/Introduction-to-C-Part-1.pdf"),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                      left: 15,
-                                      right: 2,
-                                      top: 10,
-                                      bottom: 10,
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Flexible(
-                                          child: Text(
-                                            reports[i].name,
-                                            style: GoogleFonts.workSans(
-                                              textStyle: TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.black,
-                                                fontStyle: FontStyle.normal,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            maxLines: 3,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 8,
-                                        ),
-                                        Text(
-                                          reports[i].name_of_patient,
-                                          style: GoogleFonts.workSans(
-                                            textStyle: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.black,
-                                              fontStyle: FontStyle.normal,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        SizedBox(
-                                          height: 8,
-                                        ),
-                                        Row(
-                                          children: [
-                                            const Icon(
-                                              Icons.star,
-                                              color: Colors.black,
-                                            ),
-                                            Text(
-                                              reports[i].descr,
-                                              style: GoogleFonts.workSans(
-                                                textStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.black,
-                                                  fontStyle: FontStyle.normal,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                            SizedBox(
-                                              width: 16,
-                                            ),
-                                            // Flexible(
-                                            //   child: Text(
-                                            //     reports[i].descr,
-                                            //     style: GoogleFonts.workSans(
-                                            //       textStyle: TextStyle(
-                                            //         fontSize: 14,
-                                            //         color: Colors.black,
-                                            //         fontStyle: FontStyle.normal,
-                                            //         fontWeight: FontWeight.w600,
-                                            //       ),
-                                            //     ),
-                                            //     maxLines: 1,
-                                            //     overflow: TextOverflow.ellipsis,
-                                            //   ),
-                                            // ),
-                                          ],
-                                        )
-                                      ],
+                FutureBuilder(
+                  future: datas,
+                  builder: (context, snapshot) => snapshot.hasData
+                      ? ListView.separated(
+                          shrinkWrap: true,
+                          itemCount: DataList.length,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (c, i) {
+                            // List xxx = snapshot.data;
+
+                            // List<Examination> dataList =
+                            //     List<Examination>.from(datas.map((i) {
+                            //   return Examination.fromJSON(datas);
+                            // }));
+
+                            // List dataList = snapshot.data;
+                            return SizedBox(
+                              height: 125,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Center(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Container(
+                                        width: 125,
+                                        height: 125,
+                                        // margin: EdgeInsets.only(right: 14 ),
+                                        color: Color.fromARGB(255, 160, 58, 58),
+                                        child: PDF().cachedFromUrl(
+                                            "https://www.bu.edu/tech/files/2017/02/Introduction-to-C-Part-1.pdf"),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    );
-                  },
-                  separatorBuilder: (c, i) {
-                    return SizedBox(height: 24);
-                  },
+                                  Expanded(
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(
+                                              left: 15,
+                                              right: 2,
+                                              top: 10,
+                                              bottom: 10,
+                                            ),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Flexible(
+                                                  child: Text(
+                                                    DataList[i][0],
+                                                    style: GoogleFonts.workSans(
+                                                      textStyle: TextStyle(
+                                                        fontSize: 16,
+                                                        color: Colors.black,
+                                                        fontStyle:
+                                                            FontStyle.normal,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                    maxLines: 3,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 8,
+                                                ),
+                                                Text(
+                                                  DataList[i][0],
+                                                  style: GoogleFonts.workSans(
+                                                    textStyle: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.black,
+                                                      fontStyle:
+                                                          FontStyle.normal,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                                SizedBox(
+                                                  height: 8,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    const Icon(
+                                                      Icons.star,
+                                                      color: Colors.black,
+                                                    ),
+                                                    Text(
+                                                      DataList[i][0],
+                                                      style:
+                                                          GoogleFonts.workSans(
+                                                        textStyle: TextStyle(
+                                                          fontSize: 14,
+                                                          color: Colors.black,
+                                                          fontStyle:
+                                                              FontStyle.normal,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 16,
+                                                    ),
+                                                    // Flexible(
+                                                    //   child: Text(
+                                                    //     reports[i].descr,
+                                                    //     style: GoogleFonts.workSans(
+                                                    //       textStyle: TextStyle(
+                                                    //         fontSize: 14,
+                                                    //         color: Colors.black,
+                                                    //         fontStyle: FontStyle.normal,
+                                                    //         fontWeight: FontWeight.w600,
+                                                    //       ),
+                                                    //     ),
+                                                    //     maxLines: 1,
+                                                    //     overflow: TextOverflow.ellipsis,
+                                                    //   ),
+                                                    // ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
+                          },
+                          separatorBuilder: (c, i) {
+                            return SizedBox(height: 24);
+                          },
+                        )
+                      : Center(
+                          child: CircularProgressIndicator(),
+                        ),
                 ),
                 SizedBox(height: 8),
               ],
@@ -327,19 +349,16 @@ class _ResultOfAnalysisState extends State<ResultOfAnalysis> {
   Future<String?> PopUps(BuildContext context) => showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-            title: Text("ادخل رقم الهوية"),
-            content: TextField(
-              autofocus: true,
-              decoration: InputDecoration(hintText: "ادخل رقم الهوية"),
-              controller: nationNumber,
+            title: Text(
+              "الرجاء ادخال رقم الهوية اولاً",
+              textDirection: TextDirection.rtl,
             ),
             actions: [
               TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop(nationNumber.text);
-                    // print(nationNumber.text);
+                    Navigator.of(context).pop();
                   },
-                  child: Text('بحث عن نتائج'))
+                  child: Text('حسنا'))
             ],
           ));
 
@@ -364,6 +383,28 @@ class _ResultOfAnalysisState extends State<ResultOfAnalysis> {
     await raf.close();
     return file;
   }
+  // List<Post> _postList =new List<Post>();
+
+  Future dataFetch(String? id) async {
+    print('http://localhost/lab/reports.php?id=$id');
+    final response = await http
+        .get(Uri.parse('http://192.168.3.131/lab/reports.php?id=$id'));
+    if (response.statusCode == 200) {
+      print(jsonDecode(response.body));
+
+      setState(() {
+        datas = jsonDecode(response.body);
+        DataList = jsonDecode(response.body);
+      });
+    }
+  }
+
+  // Future<http.Response> fetchDatas({String? id}) async {
+  //   final response =
+  //       await http.get(Uri.parse('http://localhost/lab/reports.php?id=$id'));
+  //   print(response.statusCode);
+  //   print(response.body);
+  // }
 
   var kAnimationDuration = const Duration(milliseconds: 200);
 

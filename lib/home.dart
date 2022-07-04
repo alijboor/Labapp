@@ -216,6 +216,7 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Expanded(
+                  flex: 2900,
                   child: Card(
                     elevation: 5,
                     shape: RoundedRectangleBorder(
@@ -275,6 +276,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Expanded(
+                  flex: 4000,
                   child: SizedBox(
                     width: 250,
                     child: Card(
@@ -327,6 +329,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Expanded(
+                  flex: 3000,
                   child: Card(
                     elevation: 5,
                     shape: RoundedRectangleBorder(

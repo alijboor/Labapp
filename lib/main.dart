@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_print, deprecated_member_use, use_key_in_widget_constructors, camel_case_types, unused_local_variable
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_print, deprecated_member_use, use_key_in_widget_constructors, camel_case_types, unused_local_variable, depend_on_referenced_packages
 import 'package:flutter/material.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:firebase_core/firebase_core.dart';
