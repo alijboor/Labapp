@@ -1,10 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:contactus/contactus.dart';
 
 class CallUs extends StatelessWidget {
-  const CallUs({Key? key}) : super(key: key);
+  const CallUs({Key? key, required this.content}) : super(key: key);
+  final String content;
 
   @override
   Widget build(BuildContext context) {
@@ -21,33 +21,36 @@ class CallUs extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      extendBodyBehindAppBar: true,
-      backgroundColor: Colors.teal,
-      body: ContactUs(
-        cardColor: Colors.white,
-        textColor: Colors.teal.shade900,
-        logo: AssetImage('images/icon.png'),
-        email: 'Itqan@gmail.com',
-        companyName: 'شركة اتقان للبرمجة',
-        companyColor: Colors.teal.shade100,
-        dividerThickness: 2,
-        phoneNumber: '+972599969980',
-        // website: 'https://abhishekdoshi.godaddysites.com',
-        // githubUserName: 'AbhishekDoshi26',
-        // linkedinURL:
-        //     'https://www.linkedin.com/in/abhishek-doshi-520983199/',
-        tagLine: 'لتطوير البرمجيات',
-        taglineColor: Colors.teal.shade100,
-        // twitterHandle: 'AbhishekDoshi26',
-        // instagram: '_abhishek_doshi',
-        facebookHandle: 'itqanps',
+      body: Center(
+        child: Text(content),
       ),
-      bottomNavigationBar: ContactUsBottomAppBar(
-        companyName: 'شركة اتقان للبرمجة',
-        textColor: Colors.white,
-        backgroundColor: Colors.teal.shade300,
-        email: 'Itqan@gmail.com',
-      ),
+      // extendBodyBehindAppBar: true,
+      // backgroundColor: Colors.teal,
+      // body: ContactUs(
+      //   cardColor: Colors.white,
+      //   textColor: Colors.teal.shade900,
+      //   logo: AssetImage('images/icon.png'),
+      //   email: 'Itqan@gmail.com',
+      //   companyName: 'شركة اتقان للبرمجة',
+      //   companyColor: Colors.teal.shade100,
+      //   dividerThickness: 2,
+      //   phoneNumber: '+972599969980',
+      //   // website: 'https://abhishekdoshi.godaddysites.com',
+      //   // githubUserName: 'AbhishekDoshi26',
+      //   // linkedinURL:
+      //   //     'https://www.linkedin.com/in/abhishek-doshi-520983199/',
+      //   tagLine: 'لتطوير البرمجيات',
+      //   taglineColor: Colors.teal.shade100,
+      //   // twitterHandle: 'AbhishekDoshi26',
+      //   // instagram: '_abhishek_doshi',
+      //   facebookHandle: 'itqanps',
+      // ),
+      // bottomNavigationBar: ContactUsBottomAppBar(
+      //   companyName: 'شركة اتقان للبرمجة',
+      //   textColor: Colors.white,
+      //   backgroundColor: Colors.teal.shade300,
+      //   email: 'Itqan@gmail.com',
+      // ),
     );
   }
 }

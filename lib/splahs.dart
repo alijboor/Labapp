@@ -14,10 +14,10 @@ class Splashed extends StatelessWidget {
       navigateAfterSeconds:
           Directionality(textDirection: TextDirection.rtl, child: HomePage()),
       title: Text(
-        'LAB Hebron',
+        'Home Lab Group',
         textScaleFactor: 2,
       ),
-      image: Image.asset("images/lab.png"),
+      image: Image.asset("images/logo.png"),
       loadingText: Text("تحميل ..."),
       photoSize: 100.0,
       loaderColor: Colors.blue,

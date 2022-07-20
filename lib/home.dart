@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, prefer_const_literals_to_create_immutables, prefer_const_constructors, deprecated_member_use, unnecessary_string_interpolations
+// ignore_for_file: avoid_print, prefer_const_literals_to_create_immutables, prefer_const_constructors, deprecated_member_use, unnecessary_string_interpolations, prefer_typing_uninitialized_variables
 
 import 'dart:convert';
 import 'dart:io';
@@ -17,6 +17,7 @@ import 'package:lapapp/data/image.dart';
 import 'package:lapapp/developerpage.dart';
 import 'package:lapapp/doctors.dart';
 import 'package:lapapp/examinationhome.dart';
+import 'package:lapapp/ourservice.dart';
 import 'package:lapapp/resultofanalysis.dart';
 import 'package:path_provider/path_provider.dart';
 // ignore: import_of_legacy_library_into_null_safe
@@ -33,7 +34,10 @@ class _HomePageState extends State<HomePage> {
   List sliderimage = [];
   String about = '';
   String contact = '';
+  String service = '';
+  String servicePageContent = '';
 
+  var items;
   Future<String> getLocalPath() async {
     var folder = await getApplicationDocumentsDirectory();
     return folder.path;
@@ -52,10 +56,31 @@ class _HomePageState extends State<HomePage> {
   Future<String> readAbout() async {
     try {
       final file = await getLocalFileabout();
-      String content = await file.readAsString();
-      return content;
+      String about = await file.readAsString();
+      return about;
     } catch (e) {
-      return e.toString();
+      return "";
+    }
+  }
+
+  //service
+  Future<File> getLocalFileService() async {
+    String path = await getLocalPath();
+    return File('$path/service.txt');
+  }
+
+  Future<File> writeService(String data) async {
+    File file = await getLocalFileService();
+    return file.writeAsString(data);
+  }
+
+  Future<String> readService() async {
+    try {
+      final file = await getLocalFileService();
+      String service = await file.readAsString();
+      return service;
+    } catch (e) {
+      return "";
     }
   }
 
@@ -76,7 +101,7 @@ class _HomePageState extends State<HomePage> {
       String content = await file.readAsString();
       return content;
     } catch (e) {
-      return e.toString();
+      return "";
     }
   }
 
@@ -94,26 +119,33 @@ class _HomePageState extends State<HomePage> {
         contact = datas;
       });
     });
+    readService().then((dat) {
+      setState(() {
+        service = dat;
+      });
+    });
   }
 
   fechData() async {
     String links = 'http://145.14.157.127/apps/labsmobileapp/';
     final response = await http.get(Uri.parse(links));
     if (response.statusCode == 200) {
-      var items = json.decode(response.body);
-      sliderimage = json.decode(response.body)[2][1];
-      // imageList.add();
+      items = json.decode(response.body);
+      // print(items[2][1]);
+
       writeAbout(items[0][1]);
       writeContact(items[1][1]);
+      writeContact(items[2][1]);
+
+      sliderimage = json.decode(response.body)[2][1];
     }
   }
-// for open url
 
-  _launchURL(url) async {
-    if (await canLaunch(url)) {
-      await launch(url, forceSafariVC: true, forceWebView: true);
-    } else {
-      throw 'Could not launch $url';
+  addImage() {
+    var i = 0;
+    for (var element in sliderimage) {
+      imageList[i] = element[1];
+      i++;
     }
   }
 
@@ -130,7 +162,7 @@ class _HomePageState extends State<HomePage> {
       key: scaffoldkey,
       appBar: AppBar(
         title: Text(
-          'مختبرات',
+          'Home Lab Group',
         ),
         actions: [
           IconButton(
@@ -144,8 +176,6 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
       ),
       body: FooterView(
-        // scrollDirection: Axis.vertical,
-        // physics: ClampingScrollPhysics(),.
         flex: 6,
         footer: Footer(
           child: Column(
@@ -188,7 +218,7 @@ class _HomePageState extends State<HomePage> {
                             InkWell(
                               onTap: () {
                                 print(sliderimage);
-                                _launchURL(e.link.toString());
+                                launch(e.link.toString());
                               }, // Image tapped
                               child: Ink.image(
                                 image: AssetImage(e.name),
@@ -240,15 +270,6 @@ class _HomePageState extends State<HomePage> {
                                     textDirection: TextDirection.rtl,
                                     child: Doctors()),
                               ));
-
-                              // var snackbars = SnackBar(
-                              //   content: Text('Comming soon'),
-                              //   duration: Duration(seconds: 1),
-                              //   behavior: SnackBarBehavior.floating,
-                              //   padding: EdgeInsets.all(10),
-                              //   margin: EdgeInsets.all(5),
-                              // );
-                              // scaffoldkey.currentState?.showSnackBar(snackbars);
                             },
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -263,7 +284,7 @@ class _HomePageState extends State<HomePage> {
                                     child: Container(
                                   padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
                                   child: Text(
-                                    'حجز الاطباء',
+                                    'المختبرات',
                                     textAlign: TextAlign.center,
                                   ),
                                 )),
@@ -388,14 +409,9 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      var snackbars = SnackBar(
-                        content: Text('Comming soon'),
-                        duration: Duration(seconds: 1),
-                        behavior: SnackBarBehavior.floating,
-                        padding: EdgeInsets.all(10),
-                        margin: EdgeInsets.all(5),
-                      );
-                      scaffoldkey.currentState?.showSnackBar(snackbars);
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) =>
+                              OurService(content: items[2][2])));
                     },
                     child: CircleAvatar(
                       radius: 57,
@@ -411,7 +427,9 @@ class _HomePageState extends State<HomePage> {
                                 FontAwesomeIcons.flaskVial,
                                 size: 40,
                               ),
-                              Text('التحاليل المتوفر'),
+                              service == ''
+                                  ? Text('خدماتنا')
+                                  : Text('$service'),
                             ],
                           ),
                         ),
@@ -422,8 +440,8 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => CallUs()));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => CallUs(content: items[1][2])));
                     },
                     child: CircleAvatar(
                       radius: 57,
@@ -439,7 +457,9 @@ class _HomePageState extends State<HomePage> {
                                 FontAwesomeIcons.phone,
                                 size: 40,
                               ),
-                              Text('$contact'),
+                              contact == ''
+                                  ? Text('اتصل بنا')
+                                  : Text('$contact'),
                             ],
                           ),
                         ),
@@ -450,8 +470,8 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => AboutUs()));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => AboutUs(content: items[0][2])));
                     },
                     child: CircleAvatar(
                       radius: 57,
@@ -467,7 +487,10 @@ class _HomePageState extends State<HomePage> {
                                 FontAwesomeIcons.circleInfo,
                                 size: 40,
                               ),
-                              Text('$about'),
+                              if (about == '')
+                                Text('من نحن؟')
+                              else
+                                Text('$about'),
                             ],
                           ),
                         ),

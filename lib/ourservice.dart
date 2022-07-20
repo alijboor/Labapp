@@ -1,9 +1,9 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
+import 'package:flutter/src/foundation/key.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
-class AboutUs extends StatelessWidget {
-  const AboutUs({Key? key, required this.content}) : super(key: key);
+class OurService extends StatelessWidget {
+  const OurService({Key? key, required this.content}) : super(key: key);
   final String content;
 
   @override
@@ -12,7 +12,7 @@ class AboutUs extends StatelessWidget {
       appBar: AppBar(
           title: Center(
         child: Text(
-          'من نحن؟',
+          '',
         ),
       )),
       body: Center(child: Text(content)),
